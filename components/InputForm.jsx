@@ -7,15 +7,41 @@ import {
   Text,
   TextInput
 } from 'react-native';
+import { useDispatch } from 'react-redux';
+import { addTodo } from '../redux/slices/todoSlice';
 
 export const InputForm = () => {
+  /** Property */
+  const dispatch = useDispatch();
+
+  const [curValue, setCurValue] = useState('');
+
+  /** Function */
+  const handleChange = (e) => {
+    setCurValue(e.nativeEvent.text);
+  };
+
+  const handleSubmit = () => {
+    if (curValue !== '') {
+      dispatch(addTodo(curValue));
+      setCurValue('');
+    }
+  };
+
+  /** Render */
   return (
     <KeyboardAvoidingView
       style={styles.addFormContainer}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
-      <TextInput style={styles.inputField} placeholder="Enter your todo list" />
-      <Pressable style={styles.addButton}>
+      <TextInput
+        style={styles.inputField}
+        placeholder="Enter your todo list"
+        value={curValue}
+        onChange={(e) => handleChange(e)}
+        onSubmitEditing={handleSubmit}
+      />
+      <Pressable style={styles.addButton} onPress={handleSubmit}>
         <Text style={styles.addButtonText}>+</Text>
       </Pressable>
     </KeyboardAvoidingView>
