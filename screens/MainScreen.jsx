@@ -7,6 +7,8 @@ import {
   Text,
   View
 } from 'react-native';
+import { InputForm } from '../components/InputForm';
+import { TodoItem } from '../components/TodoItem';
 
 export const MainScreen = () => {
   return (
@@ -15,33 +17,32 @@ export const MainScreen = () => {
       <Text style={styles.pageTitle}>Todo App</Text>
       <View style={styles.listView}>
         <Text style={styles.listTitle}>My Todo</Text>
+        <TodoItem />
       </View>
       <View style={styles.separator} />
       <View style={styles.listView}>
         <Text style={styles.listTitle}>Completed</Text>
       </View>
+      <InputForm />
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: 'column',
     paddingTop: Platform.OS === 'android' ? 20 : 0,
     backgroundColor: '#F7F0FA',
     height: '100%'
   },
   pageTitle: {
-    display: 'flex',
-    width: '100%',
-    backgroundColor: 'red',
+    flexDirection: 'column',
     marginBottom: 35,
     paddingHorizontal: 15,
     fontSize: 54,
     fontWeight: '600'
   },
   listView: {
-    // flex: 1
+    flex: 1
   },
   listTitle: {
     marginBottom: 25,
