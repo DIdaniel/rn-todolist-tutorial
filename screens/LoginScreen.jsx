@@ -1,29 +1,75 @@
-import { createUserWithEmailAndPassword } from 'firebase/auth';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
+  Alert,
   StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
   View
 } from 'react-native';
-import Svg, { Path, Rect } from 'react-native-svg';
+import Svg, { Path } from 'react-native-svg';
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  onAuthStateChanged
+} from 'firebase/auth';
+import { Toast } from 'react-native-toast-message/lib/src/Toast';
+import { useNavigation } from '@react-navigation/native';
 
 export const LoginScreen = () => {
   /** Property */
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
+  const auth = getAuth();
+  const navigation = useNavigation();
+
   /** Function */
-  const handleLogin = async () => {};
+  const handleLogin = async () => {
+    try {
+      const user = await signInWithEmailAndPassword(auth, email, password);
+    } catch (err) {
+      Alert.alert(
+        '로그인 도중 문제 발생!',
+        err.message,
+        [{ text: 'Close', onPress: () => console.log('Cliked close button') }],
+        { cancelable: true }
+      );
+    }
+  };
 
   const handleSignup = async () => {
     try {
       const user = await createUserWithEmailAndPassword(auth, email, password);
+      // console.log('USER >> ', user);
+      Toast.show({
+        type: 'success',
+        text1: '회원가입 성공!',
+        text2: `${email}으로 가입되었습니다`
+      });
     } catch (err) {
       console.log('signUp Error >> ', err.message);
+      Alert.alert(
+        '회원가입 중 문제 발생',
+        err.message,
+        [{ text: 'Close', onPress: () => console.log('Clicked close button') }],
+        { cancelable: true }
+      );
     }
   };
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      console.log('user in firebase >>> ', user);
+
+      if (user) {
+        navigation.replace('Main');
+      }
+    });
+
+    return unsubscribe;
+  }, []);
 
   /** Render */
   return (
